@@ -1,0 +1,56 @@
+Router(config)#int s0/3/0
+Router(config-if)#ip add 1.1.1.2 255.255.255.0
+Router(config-if)#no shut
+Router(config-if)#ex
+Router(config)#int f0/0
+Router(config-if)#ip add 10.0.0.1 255.255.252.0
+Router(config-if)#no shut
+Router(config-if)#ex
+Router(config)#int s0/3/1
+Router(config-if)#no ip add
+Router(config-if)#ip add 2.2.2.1 255.255.255.0
+Router(config-if)#clock rate 64000
+Router(config-if)#bandwidth 64
+Router(config-if)#no shut
+Router(config-if)#ex
+
+Router(config)#access-list 1 permit 10.0.0.0 0.0.3.255
+Router(config)#ip nat pool aiub 1.1.1.1 1.1.1.10 netmask 255.255.255.0
+Router(config)#ip nat inside source list 1 pool aiub
+Router(config)#int f0/0
+Router(config-if)#ip nat inside
+Router(config-if)#ex
+Router(config)#int s0/3/0
+Router(config-if)#ip nat outside
+Router(config-if)#ex
+Router(config)#ip route 0.0.0.0 0.0.0.0 1.1.1.1
+Router(config)#ex
+Router#
+%SYS-5-CONFIG_I: Configured from console by console
+Router#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#int s0/3/0
+Router(config-if)#ip nat outside
+Router(config-if)#ex
+Router(config)#int s0/3/1
+Router(config-if)#ip nat outside
+Router(config-if)#ex
+Router(config)#ip route 0.0.0.0 0.0.0.0 2.2.2.2
+Router(config)#ex
+
+Router(config)#router ospf 425
+Router(config-router)#do sh ip route
+Router(config-router)#network 1.1.1.0 0.0.0.255 area 25
+
+00:31:34: %OSPF-5-ADJCHG: Process 425, Nbr 172.20.10.1 on Serial0/3/0 from LOADING to FULL, Loading Done
+Router(config-router)#network 2.2.2.0 0.0.0.255 area 25
+Router(config-router)#network 10.0.0.0 0.0.3.255 area 25
+Router(config-router)#ex
+                              
+	
+
+
+	
+
+
+

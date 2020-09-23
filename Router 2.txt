@@ -1,0 +1,28 @@
+Router(config)#int s0/3/0
+Router(config-if)#ip add 2.2.2.2 255.255.255.0
+Router(config-if)#no shut
+Router(config-if)#ex
+Router#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#int f0/0
+Router(config-if)#ip add 192.168.10.1 255.255.255.224
+Router(config-if)#no shut
+Router(config-if)#ex
+
+Router(config)#ip nat inside source static 192.168.10.0 2.2.2.2
+Router(config)#int f0/0
+Router(config-if)#ip nat inside
+Router(config-if)#ex
+Router(config)#int s0/3/0
+Router(config-if)#ip nat outside
+Router(config-if)#ex
+Router(config)#ip route 0.0.0.0 0.0.0.0 2.2.2.1
+Router(config)#ex
+
+Router(config)#router ospf 450
+Router(config-router)#do sh ip route
+Router(config-router)#network 2.2.2.0 0.0.0.255 area 25
+Router(config-router)#
+00:43:25: %OSPF-5-ADJCHG: Process 450, Nbr 10.0.0.1 on Serial0/3/0 from LOADING to FULL, Loading Done
+Router(config-router)#network 192.168.10.0 0.0.0.31 area 25
+Router(config-router)#ex
